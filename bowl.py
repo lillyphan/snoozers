@@ -1,3 +1,4 @@
+from collections import deque
 def readFromFile(inFile):
     i = 0
     walls = 0
@@ -86,4 +87,23 @@ def calcScore(inputM, portals):
 
 if __name__ == "__main__":
     numWalls, teamIn, portals = readFromFile("our_new_input.txt")
-    print(calcScore(teamIn, portals))
+    out_file = open("output.txt","w")
+    number = str(calcScore(teamIn, portals))
+    out_file.write(number)
+    out_file.write("\n")
+    
+    with open("our_new_input.txt", 'r') as f:
+        next(f,None)
+        next(f,None)
+        buffer = deque()
+        first_line = True
+        for line in f:
+            buffer.append(line.rstrip('\n')) 
+            if len(buffer) > 2:
+                content = buffer.popleft()
+                
+                if not first_line:
+                    out_file.write('\n')
+                
+                out_file.write(content)
+                first_line = False
