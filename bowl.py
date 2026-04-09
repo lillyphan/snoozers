@@ -2,6 +2,7 @@ import math
 import random
 import copy
 from collections import deque
+from pathlib import Path
 
 
 def readFromFile(inFile):
@@ -182,18 +183,43 @@ def simulatedAnnealing(grid, portals, wallBudget,
                 if current_score > best_score:
                     best = copy.deepcopy(current)
                     best_score = current_score
-
         T *= alpha
-
     return best, best_score
 
 
-if __name__ == "__main__":
-    numWalls, teamIn, portals = readFromFile("our_new_input.txt")
+def createOutput(file_in, file_out, mode="anneal"):
+    """
+    mode: "anneal" to run optimization, 
+          "score" to just calculate score of existing file
+    """
+    numWalls, grid, portals = readFromFile(file_in)
+    
+    if mode == "anneal":
+        print(f"  Running Simulated Annealing on {file_in.name}...")
+        final_grid, final_score = simulatedAnnealing(grid, portals, numWalls)
+    else:
+        print(f"  Calculating BFS Score for {file_in.name}...")
+        # Just calculate score; no penalization if you want raw stats
+        final_grid = grid
+        final_score = calcScore(grid, portals, penalizeOpen=True)
 
-    best_grid, best_score = simulatedAnnealing(teamIn, portals, numWalls)
-
-    with open("output.txt", "w") as out_file:
-        out_file.write(str(best_score))
-        for row in best_grid:
+    with open(file_out, "w") as out_file:
+        out_file.write(str(final_score))
+        for row in final_grid:
             out_file.write("\n" + "".join(row))
+
+if __name__ == "__main__":
+    local_folder_location = Path(__file__).resolve().parent
+    all_inputs = local_folder_location / "inputs"
+    
+    output_folder = local_folder_location / "outputs"
+    output_folder.mkdir(exist_ok=True)
+    
+    # CHANGE THIS TO "score" IF YOU JUST WANT BFS
+    RUN_MODE = "score" 
+
+    for file_path in all_inputs.glob("*.txt"):
+        output_name = f"output_{file_path.name}"
+        output_path = output_folder / output_name
+        
+        createOutput(file_path, output_path, mode=RUN_MODE)
