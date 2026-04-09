@@ -358,7 +358,7 @@ if __name__ == "__main__":
     # Change to "score" if you only want to score existing inputs
     RUN_MODE = "anneal"
 
-    for file_path in all_inputs.glob("*1184.txt"):
+    for file_path in all_inputs.glob("*.txt"):
         output_name = f"output_{file_path.name}"
         output_path = output_folder / output_name
         createOutput(file_path, output_path, mode=RUN_MODE)
