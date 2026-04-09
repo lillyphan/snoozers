@@ -194,6 +194,6 @@ if __name__ == "__main__":
     best_grid, best_score = simulatedAnnealing(teamIn, portals, numWalls)
 
     with open("output.txt", "w") as out_file:
-        out_file.write(str(best_score) + "\n")
+        out_file.write(str(best_score))
         for row in best_grid:
-            out_file.write("".join(row) + "\n")
+            out_file.write("\n" + "".join(row))
